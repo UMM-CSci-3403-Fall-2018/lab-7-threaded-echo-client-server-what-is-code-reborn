@@ -1,9 +1,8 @@
 package echoserver;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
+import java.lang.Thread;
 
 public class EchoClient {
 	
@@ -20,12 +19,10 @@ public class EchoClient {
 		
 		Socket socket = new Socket("localhost", PORT_NUMBER);
 		
-		InputStream socketInputStream = socket.getInputStream();
-		Thread iThread = new Thread(new ServerReader(socketInputStream));
+		Thread iThread = new Thread(new ServerReader(socket));
 		iThread.start();
 		
-		OutputStream socketOutputStream = socket.getOutputStream();
-		Thread oThread = new Thread(new KeyboardReader(socketOutputStream));
+		Thread oThread = new Thread(new KeyboardReader(socket));
 		oThread.start();
 		
 		oThread.join();

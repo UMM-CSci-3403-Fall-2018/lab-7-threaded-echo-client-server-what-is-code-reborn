@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.lang.Thread;
 
 public class EchoServer {
 
@@ -24,16 +25,9 @@ public class EchoServer {
 		while (true) {
 
 			Socket socket = serverSocket.accept();
-			InputStream inputStream = socket.getInputStream();
-			OutputStream outputStream = socket.getOutputStream();
 
-			int b;
-
-			while ((b = inputStream.read()) != -1) {
-
-				outputStream.write(b);
-
-			}
+			Thread thread = new Thread(new ServerThreader(socket));
+			thread.start();
 
 		}
 
