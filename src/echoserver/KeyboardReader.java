@@ -25,6 +25,7 @@ public class KeyboardReader implements Runnable {
             while ((readByte = System.in.read()) != -1) {
 
                 oStream.write(readByte);
+                oStream.flush();
 
             }
 
