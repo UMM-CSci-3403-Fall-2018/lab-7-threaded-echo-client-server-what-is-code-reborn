@@ -6,23 +6,34 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class EchoClient {
+	
 	public static final int PORT_NUMBER = 6013;
 
 	public static void main(String[] args) throws IOException {
+		
 		EchoClient client = new EchoClient();
 		client.start();
 	}
 
-	private void start() throws IOException {
+	private void start() throws IOException, InterruptedException {
+		
 		Socket socket = new Socket("localhost", PORT_NUMBER);
+		
 		InputStream socketInputStream = socket.getInputStream();
+		Thread iThread = new Thread(new ServerReader(socketInputStream));
+		iThread.start();
+		
 		OutputStream socketOutputStream = socket.getOutputStream();
-		int readByte;
-		while ((readByte = System.in.read()) != -1) {
-			socketOutputStream.write(readByte);
-			int socketByte = socketInputStream.read();
-			System.out.write(socketByte);
-		}
+		Thread oThread = new Thread(new KeyboardReader(socketOutputStream));
+		oThread.start();
+		
+		oThread.join();
+		
+		iThread.join();
+		
+		socket.close();
+		
 		System.out.flush();
+	
 	}
 }
